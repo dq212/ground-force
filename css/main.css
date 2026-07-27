@@ -1,0 +1,60 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #1c1c1c;
+  background: #f7f7f4;
+}
+
+.app-shell {
+  min-height: 100dvh;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 5rem;
+}
+
+.app-header h1 { margin: 0; font-size: 1.5rem; }
+
+h2, h3, p { margin-top: 0; }
+
+.screen-card {
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 1px 3px #00000014;
+}
+
+.primary-button {
+  width: 100%;
+  min-height: 3.25rem;
+  border: 0;
+  border-radius: .5rem;
+  background: #1c1c1c;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+}
+
+.bottom-nav {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: .5rem;
+  background: #fff;
+  border-top: 1px solid #deded9;
+}
+
+.bottom-nav button {
+  min-height: 3rem;
+  border: 0;
+  background: transparent;
+  font: inherit;
+}
+
+.bottom-nav button[aria-current="page"] { font-weight: 700; }
