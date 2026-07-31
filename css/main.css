@@ -144,3 +144,55 @@ ul {
 
 .player-actions .primary-button { border: 0; background: #1c1c1c; color: #fff; }
 .player-actions button:disabled { cursor: not-allowed; opacity: .45; }
+
+.completion-status { color: #27633c; font-weight: 700; }
+
+.program-progress {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #deded9;
+}
+
+.program-progress h3 { margin-bottom: 1rem; }
+
+.program-progress > h4 {
+  margin: 0 0 .75rem;
+  color: #66665f;
+  font-size: .875rem;
+}
+
+.program-week { margin-bottom: 1rem; }
+
+.program-week h4 {
+  margin: 0 0 .5rem;
+  font-size: .875rem;
+}
+
+.program-week p { margin: .35rem 0; }
+.progress-total { margin: 1.25rem 0 0; font-weight: 700; }
+
+.history-list { display: grid; gap: .75rem; }
+
+.history-item {
+  display: grid;
+  gap: .25rem;
+  padding: 1rem;
+  border: 1px solid #deded9;
+  border-radius: .75rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.history-item span,
+.history-summary > p { color: #66665f; font-size: .875rem; }
+
+.history-exercise {
+  margin: 1rem 0;
+  padding-top: 1rem;
+  border-top: 1px solid #deded9;
+}
+
+.history-exercise h3 { margin-bottom: .25rem; }
+.history-exercise p { margin-bottom: .75rem; line-height: 1.5; }
