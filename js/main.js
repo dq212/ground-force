@@ -245,9 +245,14 @@ function showScreen(screen) {
   });
 }
 
+function setWorkoutMode(isActive) {
+  navigation.classList.toggle("is-hidden", isActive);
+}
+
 function startWorkout(workout) {
   activeWorkout = workout;
   currentExercise = 0;
+  setWorkoutMode(true);
   showWorkoutPlayer(activeWorkout);
 }
 
@@ -273,22 +278,35 @@ function showWorkoutPlayer(workout) {
         ${exercise.tip ? `<section class="exercise-section"><h3>Tip</h3><p>${exercise.tip}</p></section>` : ""}
       </article>
       <div class="player-actions">
+        <button type="button" data-action="exit">Exit Workout</button>
         <button type="button" data-action="previous" ${currentExercise === 0 ? "disabled" : ""}>Previous</button>
         <button class="primary-button" type="button" data-action="${currentExercise === exercises.length - 1 ? "finish" : "next"}">${currentExercise === exercises.length - 1 ? "Finish Workout" : "Next"}</button>
       </div>
     </section>`;
 }
 
-function showCompletion() {
-  app.innerHTML = `
-    <section class="screen-card">
-      <h2>Workout Complete</h2>
-      <p>Great work.</p>
-      <button class="primary-button" type="button" data-action="back">Return Home</button>
-    </section>`;
+function showExitDialog() {
+  app.innerHTML += `
+    <div class="modal-backdrop" role="presentation">
+      <section class="exit-dialog" role="dialog" aria-modal="true" aria-labelledby="exit-title">
+        <h2 id="exit-title">Exit Workout?</h2>
+        <p>This workout will not be marked as complete.</p>
+        <p>You can always start it again later.</p>
+        <button class="primary-button" type="button" data-action="continue">Continue Workout</button>
+        <button class="text-button" type="button" data-action="confirm-exit">Exit Workout</button>
+      </section>
+    </div>`;
+}
+
+function endWorkout() {
+  activeWorkout = null;
+  currentExercise = 0;
+  setWorkoutMode(false);
+  showScreen("today");
 }
 
 navigation.addEventListener("click", (event) => {
+  if (activeWorkout) return;
   const screen = event.target.dataset.screen;
   if (screen) showScreen(screen);
 });
@@ -313,10 +331,16 @@ app.addEventListener("click", (event) => {
 
   if (target.dataset.action === "finish") {
     recordCompletion(activeWorkout);
-    showCompletion();
+    endWorkout();
   }
 
   if (target.dataset.action === "back") showScreen("today");
+
+  if (target.dataset.action === "exit") showExitDialog();
+
+  if (target.dataset.action === "continue") showWorkoutPlayer(activeWorkout);
+
+  if (target.dataset.action === "confirm-exit") endWorkout();
 
   if (target.dataset.action === "history") showScreen("history");
 
