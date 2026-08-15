@@ -204,6 +204,14 @@ li + li { margin-top: .45rem; }
 
 .completion-status { color: var(--accent); font-weight: 700; }
 
+.day-label {
+  margin-bottom: .5rem;
+  color: var(--accent);
+  font-family: var(--metrics);
+  font-size: .8125rem;
+  font-weight: 700;
+}
+
 .program-progress {
   margin-top: 2rem;
   padding-top: 1.25rem;

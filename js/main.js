@@ -1,352 +1,110 @@
 const app = document.querySelector("#app");
 const navigation = document.querySelector(".bottom-nav");
-const restorePhaseA = {
-  id: "restore-phase-a",
-  title: "Restore Phase A",
-  subtitle: "Foundation movement and mobility",
-  estimatedDuration: "35 min",
-  objective: "Restore comfortable hip, glute, and pulling strength patterns.",
-  exercises: [
-  {
-    id: 1,
-    name: "Hip Flexor Stretch",
-    duration: "60 sec per side",
-    description: "Set up in a half-kneeling position and gently shift forward until you feel a stretch at the front of the trailing hip.",
-    cue: "Keep a posterior pelvic tilt as you move forward.",
-    tip: "Squeeze the trailing glute to avoid arching your lower back.",
-    equipment: "Bodyweight",
-    image: null,
-  },
-  {
-    id: 2,
-    name: "Glute Bridge",
-    reps: "12",
-    description: "Drive through your heels and lift until your hips are fully extended.",
-    cue: "Pause for two seconds at the top and squeeze your glutes.",
-    tip: "If your hamstrings cramp, tuck your pelvis slightly before lifting.",
-    equipment: "Bodyweight",
-    image: null,
-  },
-  {
-    id: 3,
-    name: "Bulgarian Split Squat",
-    reps: "8 per side",
-    description: "Lower under control with your rear foot elevated, then drive through the front heel to stand.",
-    cue: "Keep your torso tall throughout the movement.",
-    tip: "Use a shorter range of motion if you cannot keep the front heel grounded.",
-    equipment: "Bench or box",
-    image: null,
-  },
-  {
-    id: 4,
-    name: "Ring Row",
-    reps: "10",
-    description: "Keep your body in a straight line as you pull your chest toward the rings.",
-    cue: "Pull your elbows toward your ribs.",
-    tip: "Step your feet forward to make the row easier or back to make it harder.",
-    equipment: "Rings",
-    image: null,
-  },
-  {
-    id: 5,
-    name: "Box Step-Up",
-    reps: "8 per side",
-    description: "Step onto the box with control and stand fully before lowering back down.",
-    cue: "Drive through the working leg rather than pushing off the floor.",
-    tip: "Choose a box height that lets you keep your knee tracking over your toes.",
-    equipment: "Box",
-    image: null,
-  },
-  ],
-};
-const placeholderWorkout = (id, title, subtitle, objective) => ({
-  id,
-  title,
-  subtitle,
-  estimatedDuration: "35 min",
-  objective,
-  exercises: restorePhaseA.exercises,
-});
-const restoreMonth1 = {
-  id: "restore-month-1",
-  title: "Restore Month 1",
-  weeks: [
-    {
-      name: "Week 1",
-      workouts: [
-        restorePhaseA,
-        placeholderWorkout("restore-week-1-b", "Restore Phase B", "Glute activation and control", "Build consistent lower-body control with easy, repeatable movements."),
-        placeholderWorkout("restore-week-1-c", "Restore Phase C", "Pulling strength and balance", "Practice steady pulling and single-leg balance."),
-      ],
-    },
-    {
-      name: "Week 2",
-      workouts: [
-        placeholderWorkout("restore-week-2-a", "Week 2 Workout A", "Placeholder session", "Continue restoring movement quality."),
-        placeholderWorkout("restore-week-2-b", "Week 2 Workout B", "Placeholder session", "Continue building controlled strength."),
-        placeholderWorkout("restore-week-2-c", "Week 2 Workout C", "Placeholder session", "Continue practicing balanced movement."),
-      ],
-    },
-    {
-      name: "Week 3",
-      workouts: [
-        placeholderWorkout("restore-week-3-a", "Week 3 Workout A", "Placeholder session", "Continue restoring movement quality."),
-        placeholderWorkout("restore-week-3-b", "Week 3 Workout B", "Placeholder session", "Continue building controlled strength."),
-        placeholderWorkout("restore-week-3-c", "Week 3 Workout C", "Placeholder session", "Continue practicing balanced movement."),
-      ],
-    },
-    {
-      name: "Week 4",
-      workouts: [
-        placeholderWorkout("restore-week-4-a", "Week 4 Workout A", "Placeholder session", "Consolidate comfortable movement patterns."),
-        placeholderWorkout("restore-week-4-b", "Week 4 Workout B", "Placeholder session", "Consolidate controlled strength."),
-        placeholderWorkout("restore-week-4-c", "Week 4 Workout C", "Placeholder session", "Finish the month with confident movement."),
-      ],
-    },
-  ],
-};
-const todayWorkout = restoreMonth1.weeks[0].workouts[0];
-let currentExercise = 0;
-let activeWorkout = null;
 const historyKey = "ground-force-workout-history";
 
-function getWorkouts() {
-  return restoreMonth1.weeks.flatMap((week, index) => week.workouts.map((workout) => ({
-    workout,
-    week: index + 1,
-  })));
-}
-
-function getWorkoutDetails(workoutId) {
-  return getWorkouts().find(({ workout }) => workout.id === workoutId);
-}
-
+const exercise = (name, reps, description, cue, tip, equipment = "Bodyweight") => ({
+  id: name.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-").replaceAll(/(^-|-$)/g, ""), name, reps, description, cue, tip, equipment, image: null,
+});
+const common = {
+  reset: () => exercise("Breathing Reset", "4 slow breaths", "Lie on your back with feet supported and breathe slowly into your ribs.", "Let your ribs settle as you exhale.", "Keep this easy; stop or change position if symptoms increase."),
+  hipMobility: () => exercise("Hip Mobility Flow", "45 sec per side", "Move through a comfortable hip rotation and half-kneeling hip-flexor stretch.", "Use a quiet range with a level pelvis.", "Do not force range or chase a stretch."),
+  bridge: (reps = "2 × 8") => exercise("Glute Bridge", reps, "Press through both feet to lift your hips, then lower with control.", "Keep the pelvis level and feel both glutes working.", "Shorten the range if hamstrings or back take over."),
+  hipThrust: (reps = "3 × 8") => exercise("Hip Thrust", reps, "With upper back supported on a bench, raise the hips until the trunk and thighs align.", "Pause at the top without arching your low back.", "Add load only after the same smooth position is repeatable.", "Bench and optional load"),
+  birdDog: (reps = "2 × 6 per side") => exercise("Bird Dog", reps, "From hands and knees, reach the opposite arm and leg long, then return without shifting.", "Keep your pelvis level and your trunk still.", "Make the reach smaller if you rotate or symptoms increase."),
+  deadBug: (reps = "2 × 6 per side") => exercise("Dead Bug", reps, "From your back, slowly lower the opposite arm and leg, then return.", "Exhale and keep your low back comfortably heavy on the floor.", "Use a shorter lever to keep control."),
+  sidePlank: (reps = "2 × 15 sec per side", elevated = true) => exercise(elevated ? "Side Plank from Knees" : "Side Plank", reps, "Hold a straight line from shoulder through hips while braced on your forearm.", "Keep ribs stacked over a level pelvis.", "Use the knee-supported or elevated version if you lose position."),
+  pallof: (reps = "2 × 8 per side") => exercise("Anti-Rotation Press", reps, "Press a band or cable straight out from your chest and return slowly.", "Resist turning toward the anchor.", "Choose a light resistance that lets the pelvis stay quiet.", "Band or cable"),
+  balance: (reps = "2 × 20 sec per side") => exercise("Single-Leg Balance", reps, "Stand on one foot with a soft knee and free foot hovering.", "Keep the pelvis level; let the foot tripod stay connected.", "Use a fingertip support before adding difficulty."),
+  stepDown: (reps = "2 × 6 per side", height = "low") => exercise("Controlled Step-Down", reps, `Stand on a ${height} step and slowly tap the free heel to the floor before returning.`, "Track the knee over the middle toes with a level pelvis.", "Reduce step height or range if you shift, pinch, or symptoms increase.", "Step or box"),
+  splitSquat: (reps = "2 × 6 per side") => exercise("Split Squat", reps, "Lower straight down between your feet, then press through the front foot to stand.", "Keep the front knee tracking and pelvis square.", "Use support or a smaller range to keep the movement controlled."),
+  rdl: (reps = "2 × 6 per side") => exercise("Single-Leg RDL", reps, "Hinge at the hip as the free leg reaches back, then stand by pressing the floor away.", "Keep hips level and reach long through the back leg.", "Use a wall touch or light support before adding load."),
+  stepUp: (reps = "2 × 6 per side") => exercise("Controlled Step-Up", reps, "Step fully onto a low box and stand tall before lowering slowly.", "Drive through the working foot without pushing off the trailing leg.", "Use a lower box if the pelvis drops or the knee collapses.", "Step or box"),
+  ringRow: (reps = "2 × 8") => exercise("Ring Row", reps, "Keep a long body line as you pull your chest toward the rings.", "Pull elbows toward ribs without shrugging.", "Walk feet back only when each rep stays smooth.", "Rings"),
+  ringPushup: (reps = "2 × 6") => exercise("Ring Push-Up", reps, "Lower your chest between the rings, then press the rings away with control.", "Keep ribs, hips, and shoulders moving together.", "Raise the rings to reduce load and avoid compensation.", "Rings"),
+  calfRaise: (reps = "2 × 10") => exercise("Calf Raise", reps, "Rise onto the balls of your feet, pause, and lower slowly.", "Keep pressure even through the big toe and heel.", "Use support and keep the range comfortable."),
+  tibRaise: (reps = "2 × 10") => exercise("Tibialis Raise", reps, "With your back against a wall, lift the forefeet while heels stay down.", "Move slowly through the ankles.", "Use a smaller range if the front of the shin fatigues quickly."),
+  carry: (reps = "2 × 20 sec per side", load = "light") => exercise("Suitcase Carry", reps, `Walk slowly with a ${load} weight on one side.`, "Stay tall with ribs stacked over a level pelvis.", "Use less load or a shorter walk if you lean or symptoms increase.", "One dumbbell or kettlebell"),
+  farmerCarry: (reps = "2 × 25 sec") => exercise("Farmer Carry", reps, "Walk slowly while carrying matched light weights at your sides.", "Keep shoulders relaxed, steps quiet, and trunk tall.", "Load should support posture, never challenge it at the expense of control.", "Two dumbbells or kettlebells"),
+  landing: (reps = "2 × 5") => exercise("Snap-Down Landing", reps, "Rise tall, then quickly settle into a quiet athletic landing without leaving the floor.", "Land softly with knees tracking and hips level.", "Stop if landing quality changes or symptoms increase."),
+  pogo: (reps = "2 × 10") => exercise("Low Pogo Hops", reps, "Use small, quiet ankle hops in place with relaxed, springy contacts.", "Keep the hops low and land evenly through both feet.", "Return to calf raises if contacts become noisy or uncomfortable."),
+  lateralStep: (reps = "2 × 8 per side") => exercise("Lateral Step-Up", reps, "Step sideways onto a low box and stand under control, then lower slowly.", "Keep the working knee aligned and pelvis level.", "Reduce height if you shift or lose balance.", "Step or box"),
+};
+const session = (day, type, title, estimatedDuration, objective, exercises) => ({ id: `restore-month-1-day-${day}`, day, type, title, subtitle: type, estimatedDuration, objective, exercises });
+const days = [
+  session(1,"Restore","Reset & Glute Awareness","20 min","Restore comfortable movement and introduce even glute activation.",[common.reset(),common.hipMobility(),common.bridge(),common.birdDog(),common.balance()]),
+  session(2,"Stability","Foundation Trunk Control","25 min","Build a quiet trunk and level pelvis with basic stability work.",[common.deadBug(),common.sidePlank(),common.birdDog(),common.calfRaise(),common.hipMobility()]),
+  session(3,"Recovery","Easy Mobility Reset","15 min","Practice comfortable mobility, breathing, and low-effort control.",[common.reset(),common.hipMobility(),common.bridge("2 × 6"),common.balance("2 × 15 sec per side")]),
+  session(4,"Strength","Supported Lower Strength","30 min","Introduce controlled squat-pattern strength and upper-body pulling.",[common.bridge(),common.splitSquat(),common.stepUp(),common.ringRow(),common.deadBug()]),
+  session(5,"Movement","Balance & Walking Control","20 min","Rehearse single-leg control without adding load.",[common.hipMobility(),common.balance(),common.stepDown("2 × 5 per side"),common.birdDog(),common.calfRaise()]),
+  session(6,"Stability","Lateral Control Basics","25 min","Build lateral trunk and hip stability with careful positions.",[common.sidePlank(),common.pallof(),common.stepDown(),common.bridge(),common.tibRaise()]),
+  session(7,"Recovery","Week 1 Recovery","15 min","Recover with easy mobility and a check-in on movement quality.",[common.reset(),common.hipMobility(),common.bridge("2 × 8"),common.deadBug("2 × 5 per side")]),
+  session(8,"Stability","Single-Leg Foundation","25 min","Build stability before increasing unilateral range or load.",[common.balance("3 × 20 sec per side"),common.stepDown("2 × 6 per side"),common.sidePlank("2 × 20 sec per side"),common.pallof(),common.calfRaise("3 × 10")]),
+  session(9,"Strength","Split Squat & Pull","30 min","Develop controlled unilateral strength and ring pulling.",[common.bridge("3 × 8"),common.splitSquat("3 × 6 per side"),common.ringRow("3 × 8"),common.stepUp("2 × 8 per side"),common.deadBug()]),
+  session(10,"Movement","Hinge Pattern Practice","25 min","Learn a stable single-leg hinge with balance support as needed.",[common.hipMobility(),common.rdl("2 × 5 per side"),common.birdDog("2 × 8 per side"),common.balance(),common.tibRaise()]),
+  session(11,"Recovery","Mobility & Control","15 min","Maintain comfortable range while letting fatigue settle.",[common.reset(),common.hipMobility(),common.sidePlank("2 × 15 sec per side"),common.calfRaise("2 × 8")]),
+  session(12,"Strength","Unilateral Strength A","30 min","Progress unilateral strength through reps while keeping position stable.",[common.hipThrust("3 × 8"),common.splitSquat("3 × 7 per side"),common.stepDown("3 × 6 per side"),common.ringPushup(),common.pallof("2 × 10 per side")]),
+  session(13,"Stability","Carry Introduction","25 min","Introduce light carries without aggressive loading or lateral leaning.",[common.sidePlank("2 × 20 sec per side"),common.carry("2 × 15 sec per side","very light"),common.rdl("2 × 6 per side"),common.birdDog(),common.calfRaise()]),
+  session(14,"Recovery","Week 2 Recovery","15 min","Restore ease before the next strength phase.",[common.reset(),common.hipMobility(),common.bridge("2 × 8"),common.deadBug("2 × 6 per side")]),
+  session(15,"Strength","Hinge & Hip Thrust","30 min","Increase posterior-chain strength with stable hip positions.",[common.hipThrust("3 × 10"),common.rdl("3 × 6 per side"),common.ringRow("3 × 10"),common.sidePlank("2 × 25 sec per side"),common.calfRaise("3 × 12")]),
+  session(16,"Elasticity / Jump Preparation","Landing Position Practice","20 min","Introduce quiet landing mechanics before any larger jump demand.",[common.hipMobility(),common.landing(),common.stepDown("2 × 6 per side"),common.balance(),common.tibRaise("2 × 12")]),
+  session(17,"Stability","Lateral Strength Control","25 min","Progress lateral control and anti-rotation strength at a manageable dose.",[common.sidePlank("3 × 20 sec per side",false),common.pallof("3 × 8 per side"),common.lateralStep(),common.carry("2 × 20 sec per side","light"),common.deadBug("2 × 8 per side")]),
+  session(18,"Recovery","Mobility Reset","15 min","Keep movement comfortable and easy between strength sessions.",[common.reset(),common.hipMobility(),common.bridge("2 × 10"),common.birdDog("2 × 6 per side")]),
+  session(19,"Strength","Unilateral Strength B","35 min","Build range and reps in controlled single-leg patterns.",[common.splitSquat("3 × 8 per side"),common.rdl("3 × 7 per side"),common.stepUp("3 × 8 per side"),common.ringPushup("3 × 6"),common.ringRow("3 × 8")]),
+  session(20,"Elasticity / Jump Preparation","Ankle Spring Preparation","20 min","Build ankle strength and rehearse low-level elastic contacts.",[common.calfRaise("3 × 12"),common.tibRaise("3 × 12"),common.landing("3 × 5"),common.pogo("2 × 8"),common.sidePlank("2 × 20 sec per side",false)]),
+  session(21,"Recovery","Week 3 Recovery","15 min","Reduce effort and prepare for the final strength week.",[common.reset(),common.hipMobility(),common.deadBug("2 × 6 per side"),common.balance("2 × 20 sec per side")]),
+  session(22,"Strength","Strength & Carry","35 min","Add modest carry time after stable strength positions are established.",[common.hipThrust("3 × 10"),common.splitSquat("3 × 8 per side"),common.carry("3 × 20 sec per side","light to moderate"),common.ringRow("3 × 10"),common.pallof("3 × 10 per side")]),
+  session(23,"Stability","Single-Leg Range Control","30 min","Use controlled range and balance to reinforce hip and trunk control.",[common.stepDown("3 × 7 per side","low-to-medium"),common.rdl("3 × 8 per side"),common.lateralStep("3 × 6 per side"),common.sidePlank("3 × 25 sec per side",false),common.calfRaise("3 × 12")]),
+  session(24,"Recovery","Movement Quality Reset","15 min","Recover while preserving comfortable motion and control.",[common.reset(),common.hipMobility(),common.bridge("2 × 10"),common.birdDog("2 × 8 per side")]),
+  session(25,"Elasticity / Jump Preparation","Low-Level Elastic Control","25 min","Progress low-level elasticity only through quiet, consistent contacts.",[common.landing("3 × 5"),common.pogo("3 × 10"),common.stepUp("2 × 8 per side"),common.tibRaise("3 × 12"),common.deadBug("2 × 8 per side")]),
+  session(26,"Strength","Full-Body Strength Control","35 min","Connect lower-body strength, trunk control, and rings work without rushing load.",[common.hipThrust("3 × 10"),common.rdl("3 × 8 per side"),common.ringPushup("3 × 8"),common.ringRow("3 × 10"),common.farmerCarry("2 × 25 sec")]),
+  session(27,"Movement","Lateral Movement Readiness","25 min","Practice lateral control and stable single-leg transitions.",[common.lateralStep("3 × 8 per side"),common.stepDown("3 × 8 per side","low-to-medium"),common.pallof("3 × 10 per side"),common.balance("2 × 30 sec per side"),common.calfRaise("3 × 12")]),
+  session(28,"Recovery","Week 4 Recovery","15 min","Arrive at the final sessions rested and attentive to quality.",[common.reset(),common.hipMobility(),common.sidePlank("2 × 20 sec per side",false),common.bridge("2 × 10")]),
+  session(29,"Performance Preparation","Controlled Power Preparation","30 min","Combine unilateral strength, quiet landings, and low-level elastic work with control.",[common.splitSquat("3 × 8 per side"),common.rdl("3 × 8 per side"),common.landing("3 × 5"),common.pogo("3 × 10"),common.carry("2 × 25 sec per side","light to moderate")]),
+  session(30,"Performance Preparation","Readiness Assessment","30 min","Review consistent movement quality across balance, strength, landing, and trunk control.",[common.balance("2 × 30 sec per side"),common.stepDown("2 × 8 per side","low-to-medium"),common.sidePlank("2 × 30 sec per side",false),common.landing("3 × 5"),common.pogo("2 × 10"),common.ringRow("2 × 10")]),
+];
+const restoreMonth1 = { id: "restore-month-1", title: "30-Day Foundation", weeks: [
+  { name: "Week 1 · Restore & Activate", workouts: days.slice(0, 7) }, { name: "Week 2 · Build Stability", workouts: days.slice(7, 14) }, { name: "Week 3 · Strength & Elasticity", workouts: days.slice(14, 21) }, { name: "Week 4 · Strength & Power Prep", workouts: days.slice(21, 28) }, { name: "Days 29–30 · Performance Preparation", workouts: days.slice(28) },
+] };
+const legacyWorkoutDays = {
+  "restore-phase-a": 1, "restore-week-1-b": 2, "restore-week-1-c": 3,
+  "restore-week-2-a": 8, "restore-week-2-b": 9, "restore-week-2-c": 10,
+  "restore-week-3-a": 15, "restore-week-3-b": 16, "restore-week-3-c": 17,
+  "restore-week-4-a": 22, "restore-week-4-b": 23, "restore-week-4-c": 24,
+};
+let currentExercise = 0; let activeWorkout = null;
+function getWorkouts() { return restoreMonth1.weeks.flatMap((week,index) => week.workouts.map((workout) => ({ workout, week:index+1, weekName:week.name }))); }
+function getWorkoutDetails(workoutId) { return getWorkouts().find(({workout}) => workout.id === workoutId); }
 function getHistory() {
   try {
-    const history = JSON.parse(localStorage.getItem(historyKey)) || [];
-    return history.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
-  } catch {
-    return [];
-  }
+    return (JSON.parse(localStorage.getItem(historyKey)) || []).map((completion) => {
+      const legacyDay = legacyWorkoutDays[completion.workoutId];
+      return legacyDay ? { ...completion, day: completion.day || legacyDay, workoutId: `restore-month-1-day-${legacyDay}` } : completion;
+    }).sort((a,b) => new Date(b.completedAt)-new Date(a.completedAt));
+  } catch { return []; }
 }
-
-function recordCompletion(workout) {
-  const history = getHistory();
-  const details = getWorkoutDetails(workout.id);
-  history.push({
-    programId: restoreMonth1.id,
-    week: details.week,
-    workoutId: workout.id,
-    completedAt: new Date().toISOString(),
-  });
-  localStorage.setItem(historyKey, JSON.stringify(history));
+function getProgramCompletions() { return getHistory().filter((completion) => completion.programId === restoreMonth1.id); }
+function getTodayWorkout() {
+  const completions = getProgramCompletions();
+  const completedToday = completions.find((completion) => new Date(completion.completedAt).toDateString() === new Date().toDateString());
+  if (completedToday) return getWorkoutDetails(completedToday.workoutId)?.workout || days[0];
+  const completed = new Set(completions.map((completion) => completion.workoutId));
+  return days.find((workout) => !completed.has(workout.id)) || days.at(-1);
 }
-
-function formatDate(completedAt) {
-  return new Date(completedAt).toLocaleDateString();
-}
-
-function formatTime(completedAt) {
-  return new Date(completedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-}
-
-function getTodayCompletion() {
-  return getHistory().find((completion) => {
-    const completedDate = new Date(completion.completedAt);
-    return completion.workoutId === todayWorkout.id && completedDate.toDateString() === new Date().toDateString();
-  });
-}
-
-function renderProgramProgress() {
-  const completedWorkoutIds = new Set(getHistory()
-    .filter((completion) => completion.programId === restoreMonth1.id)
-    .map((completion) => completion.workoutId));
-  const workouts = getWorkouts();
-
-  return `
-    <section class="program-progress">
-      <h3>${restoreMonth1.title}</h3>
-      <h4>Completed</h4>
-      ${restoreMonth1.weeks.map((week, index) => `
-        <div class="program-week">
-          <h4>${week.name}</h4>
-          ${week.workouts.map((workout) => `<p>${completedWorkoutIds.has(workout.id) ? "✓" : "○"} ${workout.title}</p>`).join("")}
-        </div>`).join("")}
-      <p class="progress-total">${workouts.filter(({ workout }) => completedWorkoutIds.has(workout.id)).length} of ${workouts.length} workouts completed</p>
-    </section>`;
-}
-
-function renderToday() {
-  const completion = getTodayCompletion();
-  return `
-    <section class="screen-card">
-      <h2>${todayWorkout.title}</h2>
-      <p>${todayWorkout.subtitle}</p>
-      <h3>Today's Session</h3>
-      <p>Duration: ${todayWorkout.estimatedDuration}</p>
-      <p>${todayWorkout.objective}</p>
-      ${completion ? `<p class="completion-status">✓ Completed Today</p><p>Completed at ${formatTime(completion.completedAt)}</p>` : ""}
-      <h3>Exercises</h3>
-      <ul>${todayWorkout.exercises.map((exercise) => `<li>${exercise.name}</li>`).join("")}</ul>
-      <button class="primary-button" type="button" data-action="start">Start Workout</button>
-      ${renderProgramProgress()}
-    </section>`;
-}
-
-function renderHistory() {
-  const history = getHistory();
-  if (!history.length) return "<section class=\"screen-card\"><h2>History</h2><p>No completed workouts yet.</p></section>";
-
-  return `
-    <section class="screen-card">
-      <h2>History</h2>
-      <div class="history-list">
-        ${history.map((completion) => {
-          const details = getWorkoutDetails(completion.workoutId);
-          return details ? `<button class="history-item" type="button" data-action="view-history" data-completed-at="${completion.completedAt}"><strong>${details.workout.title}</strong><span>${restoreMonth1.title} · Week ${completion.week}</span><span>${formatDate(completion.completedAt)} · ${formatTime(completion.completedAt)}</span></button>` : "";
-        }).join("")}
-      </div>
-    </section>`;
-}
-
-function showHistorySummary(completedAt) {
-  const completion = getHistory().find((item) => item.completedAt === completedAt);
-  const details = completion && getWorkoutDetails(completion.workoutId);
-  if (!details) return showScreen("history");
-  const { workout } = details;
-
-  app.innerHTML = `
-    <section class="screen-card history-summary">
-      <h2>${workout.title}</h2>
-      <p>${workout.subtitle}</p>
-      <p>${workout.objective}</p>
-      <p>${formatDate(completion.completedAt)} · ${formatTime(completion.completedAt)}</p>
-      ${workout.exercises.map((exercise) => `
-        <article class="history-exercise">
-          <h3>${exercise.name}</h3>
-          <p>${exercise.reps || exercise.duration}</p>
-          <p>${exercise.description}</p>
-          ${exercise.cue ? `<p><strong>Coaching Cue:</strong> ${exercise.cue}</p>` : ""}
-          ${exercise.tip ? `<p><strong>Tip:</strong> ${exercise.tip}</p>` : ""}
-        </article>`).join("")}
-      <button class="primary-button" type="button" data-action="history">Back to History</button>
-    </section>`;
-}
-
-const screens = {
-  library: "<h2>Library</h2><p>Coming Soon</p>",
-  settings: "<h2>Settings</h2><p>Coming Soon</p>",
-};
-
-function showScreen(screen) {
-  app.innerHTML = screen === "today" ? renderToday() : screen === "history" ? renderHistory() : screens[screen];
-  navigation.querySelectorAll("[data-screen]").forEach((button) => {
-    button.toggleAttribute("aria-current", button.dataset.screen === screen);
-  });
-}
-
-function setWorkoutMode(isActive) {
-  navigation.classList.toggle("is-hidden", isActive);
-}
-
-function startWorkout(workout) {
-  activeWorkout = workout;
-  currentExercise = 0;
-  setWorkoutMode(true);
-  showWorkoutPlayer(activeWorkout);
-}
-
-function showWorkoutPlayer(workout) {
-  const exercises = workout.exercises;
-  const exercise = exercises[currentExercise];
-  const progress = ((currentExercise + 1) / exercises.length) * 100;
-  app.innerHTML = `
-    <section class="workout-player">
-      <p class="workout-title">${workout.title}</p>
-      <div class="workout-progress" role="progressbar" aria-label="Workout progress" aria-valuemin="1" aria-valuemax="${exercises.length}" aria-valuenow="${currentExercise + 1}">
-        <span style="width: ${progress}%"></span>
-      </div>
-      <p class="exercise-count">Exercise ${currentExercise + 1} of ${exercises.length}</p>
-      <article class="exercise-card">
-        <h2>${exercise.name}</h2>
-        <p class="exercise-reps">${exercise.reps || exercise.duration}</p>
-        <section class="exercise-section">
-          <h3>Description</h3>
-          <p>${exercise.description}</p>
-        </section>
-        ${exercise.cue ? `<section class="exercise-section"><h3>Focus</h3><p>${exercise.cue}</p></section>` : ""}
-        ${exercise.tip ? `<section class="exercise-section"><h3>Tip</h3><p>${exercise.tip}</p></section>` : ""}
-      </article>
-      <div class="player-actions">
-        <button type="button" data-action="exit">Exit Workout</button>
-        <button type="button" data-action="previous" ${currentExercise === 0 ? "disabled" : ""}>Previous</button>
-        <button class="primary-button" type="button" data-action="${currentExercise === exercises.length - 1 ? "finish" : "next"}">${currentExercise === exercises.length - 1 ? "Finish Workout" : "Next"}</button>
-      </div>
-    </section>`;
-}
-
-function showExitDialog() {
-  app.innerHTML += `
-    <div class="modal-backdrop" role="presentation">
-      <section class="exit-dialog" role="dialog" aria-modal="true" aria-labelledby="exit-title">
-        <h2 id="exit-title">Exit Workout?</h2>
-        <p>This workout will not be marked as complete.</p>
-        <p>You can always start it again later.</p>
-        <button class="primary-button" type="button" data-action="continue">Continue Workout</button>
-        <button class="text-button" type="button" data-action="confirm-exit">Exit Workout</button>
-      </section>
-    </div>`;
-}
-
-function endWorkout() {
-  activeWorkout = null;
-  currentExercise = 0;
-  setWorkoutMode(false);
-  showScreen("today");
-}
-
-navigation.addEventListener("click", (event) => {
-  if (activeWorkout) return;
-  const screen = event.target.dataset.screen;
-  if (screen) showScreen(screen);
-});
-
-app.addEventListener("click", (event) => {
-  const target = event.target.closest("[data-action]");
-  if (!target) return;
-
-  if (target.dataset.action === "start") {
-    startWorkout(todayWorkout);
-  }
-
-  if (target.dataset.action === "previous" && currentExercise > 0) {
-    currentExercise -= 1;
-    showWorkoutPlayer(activeWorkout);
-  }
-
-  if (target.dataset.action === "next") {
-    currentExercise += 1;
-    showWorkoutPlayer(activeWorkout);
-  }
-
-  if (target.dataset.action === "finish") {
-    recordCompletion(activeWorkout);
-    endWorkout();
-  }
-
-  if (target.dataset.action === "back") showScreen("today");
-
-  if (target.dataset.action === "exit") showExitDialog();
-
-  if (target.dataset.action === "continue") showWorkoutPlayer(activeWorkout);
-
-  if (target.dataset.action === "confirm-exit") endWorkout();
-
-  if (target.dataset.action === "history") showScreen("history");
-
-  if (target.dataset.action === "view-history") {
-    showHistorySummary(target.dataset.completedAt);
-  }
-});
-
+function recordCompletion(workout) { const details=getWorkoutDetails(workout.id); const history=getHistory(); history.push({ programId:restoreMonth1.id, day:workout.day, workoutId:workout.id, completedAt:new Date().toISOString(), ...(details ? {week:details.week}: {}) }); localStorage.setItem(historyKey,JSON.stringify(history)); }
+function formatDate(value) { return new Date(value).toLocaleDateString(); }
+function formatTime(value) { return new Date(value).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}); }
+function getTodayCompletion(workout) { return getHistory().find((completion) => completion.workoutId===workout.id && new Date(completion.completedAt).toDateString()===new Date().toDateString()); }
+function renderProgramProgress() { const done=new Set(getProgramCompletions().map((completion)=>completion.workoutId)); return `<section class="program-progress"><h3>${restoreMonth1.title}</h3><h4>Completed</h4>${restoreMonth1.weeks.map((week)=>`<div class="program-week"><h4>${week.name}</h4>${week.workouts.map((workout)=>`<p>${done.has(workout.id)?"✓":"○"} Day ${workout.day}: ${workout.title}</p>`).join("")}</div>`).join("")}<p class="progress-total">${done.size} of ${days.length} sessions completed</p></section>`; }
+function renderToday() { const workout=getTodayWorkout(); const completion=getTodayCompletion(workout); return `<section class="screen-card"><p class="day-label">Day ${workout.day} / 30</p><h2>${workout.title}</h2><p>${workout.type}</p><h3>Today's Session</h3><p>Estimated duration: ${workout.estimatedDuration}</p><p>${workout.objective}</p>${completion?`<p class="completion-status">✓ Completed Today</p><p>Completed at ${formatTime(completion.completedAt)}</p>`:""}<h3>Exercises</h3><ul>${workout.exercises.map((item)=>`<li>${item.name}</li>`).join("")}</ul><button class="primary-button" type="button" data-action="start">Start Workout</button>${renderProgramProgress()}</section>`; }
+function renderHistory() { const history=getHistory(); if(!history.length) return '<section class="screen-card"><h2>History</h2><p>No completed workouts yet.</p></section>'; return `<section class="screen-card"><h2>History</h2><div class="history-list">${history.map((completion)=>{ const details=getWorkoutDetails(completion.workoutId); if(!details) return ""; const day=completion.day||details.workout.day; return `<button class="history-item" type="button" data-action="view-history" data-completed-at="${completion.completedAt}"><strong>${details.workout.title}</strong><span>Day ${day} · ${details.workout.type}</span><span>${formatDate(completion.completedAt)} · ${formatTime(completion.completedAt)}</span></button>`; }).join("")}</div></section>`; }
+function showHistorySummary(completedAt) { const completion=getHistory().find((item)=>item.completedAt===completedAt); const details=completion&&getWorkoutDetails(completion.workoutId); if(!details) return showScreen("history"); const {workout}=details; app.innerHTML=`<section class="screen-card history-summary"><p class="day-label">Day ${completion.day||workout.day} · ${workout.type}</p><h2>${workout.title}</h2><p>${workout.objective}</p><p>${formatDate(completion.completedAt)} · ${formatTime(completion.completedAt)}</p>${workout.exercises.map((item)=>`<article class="history-exercise"><h3>${item.name}</h3><p>${item.reps||item.duration}</p><p>${item.description}</p>${item.cue?`<p><strong>Coaching Cue:</strong> ${item.cue}</p>`:""}${item.tip?`<p><strong>Tip:</strong> ${item.tip}</p>`:""}</article>`).join("")}<button class="primary-button" type="button" data-action="history">Back to History</button></section>`; }
+const screens={library:"<h2>Library</h2><p>Coming Soon</p>",settings:"<h2>Settings</h2><p>Coming Soon</p>"};
+function showScreen(screen) { app.innerHTML=screen==="today"?renderToday():screen==="history"?renderHistory():screens[screen]; navigation.querySelectorAll("[data-screen]").forEach((button)=>button.toggleAttribute("aria-current",button.dataset.screen===screen)); }
+function setWorkoutMode(isActive) { navigation.classList.toggle("is-hidden",isActive); }
+function startWorkout(workout) { activeWorkout=workout; currentExercise=0; setWorkoutMode(true); showWorkoutPlayer(activeWorkout); }
+function showWorkoutPlayer(workout) { const exercises=workout.exercises; const item=exercises[currentExercise]; const progress=((currentExercise+1)/exercises.length)*100; app.innerHTML=`<section class="workout-player"><p class="workout-title">Day ${workout.day} · ${workout.title}</p><div class="workout-progress" role="progressbar" aria-label="Workout progress" aria-valuemin="1" aria-valuemax="${exercises.length}" aria-valuenow="${currentExercise+1}"><span style="width: ${progress}%"></span></div><p class="exercise-count">Exercise ${currentExercise+1} of ${exercises.length}</p><article class="exercise-card"><h2>${item.name}</h2><p class="exercise-reps">${item.reps||item.duration}</p><section class="exercise-section"><h3>Description</h3><p>${item.description}</p></section>${item.cue?`<section class="exercise-section"><h3>Focus</h3><p>${item.cue}</p></section>`:""}${item.tip?`<section class="exercise-section"><h3>Tip</h3><p>${item.tip}</p></section>`:""}</article><div class="player-actions"><button type="button" data-action="exit">Exit Workout</button><button type="button" data-action="previous" ${currentExercise===0?"disabled":""}>Previous</button><button class="primary-button" type="button" data-action="${currentExercise===exercises.length-1?"finish":"next"}">${currentExercise===exercises.length-1?"Finish Workout":"Next"}</button></div></section>`; }
+function showExitDialog() { app.innerHTML+='<div class="modal-backdrop" role="presentation"><section class="exit-dialog" role="dialog" aria-modal="true" aria-labelledby="exit-title"><h2 id="exit-title">Exit Workout?</h2><p>This workout will not be marked as complete.</p><p>You can always start it again later.</p><button class="primary-button" type="button" data-action="continue">Continue Workout</button><button class="text-button" type="button" data-action="confirm-exit">Exit Workout</button></section></div>'; }
+function endWorkout() { activeWorkout=null; currentExercise=0; setWorkoutMode(false); showScreen("today"); }
+navigation.addEventListener("click",(event)=>{ if(activeWorkout) return; const screen=event.target.dataset.screen; if(screen) showScreen(screen); });
+app.addEventListener("click",(event)=>{ const target=event.target.closest("[data-action]"); if(!target) return; if(target.dataset.action==="start") startWorkout(getTodayWorkout()); if(target.dataset.action==="previous"&&currentExercise>0){currentExercise-=1;showWorkoutPlayer(activeWorkout);} if(target.dataset.action==="next"){currentExercise+=1;showWorkoutPlayer(activeWorkout);} if(target.dataset.action==="finish"){recordCompletion(activeWorkout);endWorkout();} if(target.dataset.action==="exit")showExitDialog(); if(target.dataset.action==="continue")showWorkoutPlayer(activeWorkout); if(target.dataset.action==="confirm-exit")endWorkout(); if(target.dataset.action==="history")showScreen("history"); if(target.dataset.action==="view-history")showHistorySummary(target.dataset.completedAt); });
 showScreen("today");
