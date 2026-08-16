@@ -231,6 +231,22 @@ li + li { margin-top: .45rem; }
 .program-week { margin-bottom: 1.25rem; }
 .program-week h4 { margin: 0 0 .5rem; color: var(--text); font-size: .75rem; }
 .program-week p { margin: .35rem 0; color: var(--muted); font-size: .8125rem; }
+.program-session {
+  display: grid;
+  gap: .2rem;
+  width: 100%;
+  margin: .35rem 0;
+  padding: .45rem;
+  border: 1px solid transparent;
+  border-radius: .5rem;
+  background: transparent;
+  color: var(--muted);
+  font: .8125rem var(--metrics);
+  text-align: left;
+}
+.program-session:hover { border-color: var(--border); background: #222730; color: var(--text); }
+.program-session span { color: var(--accent); font-size: .6875rem; }
+.program-session.is-complete span { color: var(--muted); }
 .progress-total { margin: 1.25rem 0 0; color: var(--accent); font-size: .8125rem; font-weight: 700; }
 
 .history-list { display: grid; gap: .75rem; }
