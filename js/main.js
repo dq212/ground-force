@@ -21,6 +21,11 @@ const common = {
   stepUp: (reps = "2 × 6 per side") => exercise("Controlled Step-Up", reps, "Step fully onto a low box and stand tall before lowering slowly.", "Drive through the working foot without pushing off the trailing leg.", "Use a lower box if the pelvis drops or the knee collapses.", "Step or box"),
   ringRow: (reps = "2 × 8") => exercise("Ring Row", reps, "Keep a long body line as you pull your chest toward the rings.", "Pull elbows toward ribs without shrugging.", "Walk feet back only when each rep stays smooth.", "Rings"),
   ringPushup: (reps = "2 × 6") => exercise("Ring Push-Up", reps, "Lower your chest between the rings, then press the rings away with control.", "Keep ribs, hips, and shoulders moving together.", "Raise the rings to reduce load and avoid compensation.", "Rings"),
+  cleanPress: (reps = "3 × 5 per side") => exercise("Clean & Press", reps, "Using a manageable dumbbell or kettlebell, clean the weight to the rack with control, settle, then press smoothly overhead.", "Brace a stable trunk, receive a controlled catch, and make the transition from clean to press smooth.", "This is a strength and power movement, not conditioning. Do not force overhead range; stop or modify if shoulder symptoms increase.", "Dumbbell or kettlebell"),
+  ringCurl: (reps = "2 × 8") => exercise("Ring Curl", reps, "With palms facing up, keep the upper arms still as you curl your hands toward your forehead, then lower slowly.", "Keep a long body line and let the elbows bend without the shoulders rolling forward.", "Walk feet forward only when the trunk stays controlled throughout.", "Rings"),
+  barbellCurl: (reps = "2 × 8") => exercise("Barbell Curl (Optional)", reps, "Curl a light barbell from thighs toward shoulders, then lower under control.", "Keep ribs stacked and elbows close to your sides.", "Use rings instead if the barbell version encourages swinging or discomfort.", "Barbell"),
+  ringTriceps: (reps = "2 × 8") => exercise("Ring Triceps Extension", reps, "With hands in the rings, bend the elbows to bring the hands near the forehead, then extend back to a long body line.", "Keep elbows pointing forward and trunk braced.", "Raise the rings or shorten the range if shoulder symptoms increase.", "Rings"),
+  ringCloseGrip: (reps = "2 × 6") => exercise("Ring Close-Grip Push-Up", reps, "Set the rings close together, lower with elbows near your ribs, then press back with control.", "Keep shoulders, ribs, and hips moving as one unit.", "Raise the rings to reduce load; stop or modify if shoulder symptoms increase.", "Rings"),
   calfRaise: (reps = "2 × 10") => exercise("Calf Raise", reps, "Rise onto the balls of your feet, pause, and lower slowly.", "Keep pressure even through the big toe and heel.", "Use support and keep the range comfortable."),
   tibRaise: (reps = "2 × 10") => exercise("Tibialis Raise", reps, "With your back against a wall, lift the forefeet while heels stay down.", "Move slowly through the ankles.", "Use a smaller range if the front of the shin fatigues quickly."),
   carry: (reps = "2 × 20 sec per side", load = "light") => exercise("Suitcase Carry", reps, `Walk slowly with a ${load} weight on one side.`, "Stay tall with ribs stacked over a level pelvis.", "Use less load or a shorter walk if you lean or symptoms increase.", "One dumbbell or kettlebell"),
@@ -65,6 +70,42 @@ const days = [
 const restoreMonth1 = { id: "restore-month-1", title: "30-Day Foundation", weeks: [
   { name: "Week 1 · Restore & Activate", workouts: days.slice(0, 7) }, { name: "Week 2 · Build Stability", workouts: days.slice(7, 14) }, { name: "Week 3 · Strength & Elasticity", workouts: days.slice(14, 21) }, { name: "Week 4 · Strength & Power Prep", workouts: days.slice(21, 28) }, { name: "Days 29–30 · Performance Preparation", workouts: days.slice(28) },
 ] };
+const phase2DayDrafts = [
+  session(31,"Strength A","Lower Strength & Clean + Press","40 min","Begin progressive strength work with controlled lower-body loading, trunk position, and a manageable clean and press.",[common.hipThrust("3 × 8"),common.splitSquat("3 × 6 per side"),common.cleanPress("3 × 5 per side"),common.ringRow("3 × 8"),common.pallof("2 × 10 per side")]),
+  session(32,"Stability","Single-Leg & Lateral Stability","30 min","Build hip and lateral trunk control before adding more range or load.",[common.sidePlank("3 × 20 sec per side",false),common.rdl("3 × 6 per side"),common.stepDown("3 × 6 per side","low-to-medium"),common.carry("3 × 20 sec per side","light to moderate"),common.birdDog("2 × 8 per side")]),
+  session(33,"Recovery","Phase 2 Mobility Reset","15 min","Keep movement easy and restore readiness between strength sessions.",[common.reset(),common.hipMobility(),common.bridge("2 × 8"),common.deadBug("2 × 6 per side")]),
+  session(34,"Upper Body / Rings","Rings Push, Pull & Arms","35 min","Build controlled upper-body pushing, pulling, and arm strength with rings.",[common.ringRow("3 × 10"),common.ringPushup("3 × 8"),common.ringCurl("2 × 8"),common.ringTriceps("2 × 8"),common.farmerCarry("2 × 30 sec")]),
+  session(35,"Movement / Elasticity","Elasticity Foundations","25 min","Continue low-volume elastic preparation with quiet, symmetrical contacts.",[common.calfRaise("3 × 12"),common.landing("3 × 5"),common.pogo("3 × 10"),common.lateralStep("2 × 8 per side"),common.sidePlank("2 × 25 sec per side",false)]),
+  session(36,"Strength B","Hinge, Step-Up & Press","40 min","Develop posterior-chain and single-leg strength with a smooth overhead press progression.",[common.rdl("3 × 7 per side"),common.stepUp("3 × 8 per side"),common.cleanPress("3 × 5 per side"),common.ringCloseGrip("3 × 6"),common.carry("2 × 25 sec per side","moderate")]),
+  session(37,"Recovery","Week 5 Recovery","15 min","Recover with comfortable mobility and low-effort trunk control.",[common.reset(),common.hipMobility(),common.birdDog("2 × 6 per side"),common.calfRaise("2 × 10")]),
+  session(38,"Strength A","Hip Thrust & Split Squat Build","40 min","Progress lower-body strength through a modest set increase while preserving position.",[common.hipThrust("4 × 8"),common.splitSquat("3 × 8 per side"),common.ringRow("3 × 10"),common.pallof("3 × 10 per side"),common.farmerCarry("3 × 25 sec")]),
+  session(39,"Stability","Step Control & Anti-Rotation","30 min","Use controlled single-leg range and anti-rotation work to maintain a level pelvis and trunk.",[common.stepDown("3 × 7 per side","medium"),common.lateralStep("3 × 8 per side"),common.sidePlank("3 × 25 sec per side",false),common.pallof("3 × 10 per side"),common.birdDog("3 × 6 per side")]),
+  session(40,"Recovery","Easy Movement Reset","15 min","Let fatigue settle while maintaining comfortable movement quality.",[common.reset(),common.hipMobility(),common.bridge("2 × 10"),common.balance("2 × 20 sec per side")]),
+  session(41,"Upper Body / Rings","Rings Strength & Arms","40 min","Add a small amount of upper-body volume while keeping rings and bodyweight as the main accessory tools.",[common.ringPushup("3 × 8"),common.ringRow("3 × 10"),common.ringCurl("3 × 8"),common.ringTriceps("3 × 8"),common.barbellCurl("2 × 8")]),
+  session(42,"Movement / Elasticity","Low-Volume Elastic Build","25 min","Progress elastic contacts gradually through low volume and landing quality.",[common.landing("3 × 5"),common.pogo("3 × 12"),common.calfRaise("3 × 12"),common.tibRaise("3 × 12"),common.stepUp("2 × 8 per side")]),
+  session(43,"Strength B","Posterior Chain & Carry","40 min","Build posterior-chain, pressing, and carry strength without turning the session into conditioning.",[common.rdl("3 × 8 per side"),common.hipThrust("3 × 10"),common.cleanPress("4 × 4 per side"),common.ringCloseGrip("3 × 7"),common.carry("3 × 25 sec per side","moderate")]),
+  session(44,"Recovery","Week 6 Recovery","15 min","Recover before the next loading progression.",[common.reset(),common.hipMobility(),common.deadBug("2 × 8 per side"),common.sidePlank("2 × 20 sec per side",false)]),
+  session(45,"Strength A","Loaded Lower Strength","45 min","Introduce a manageable external load to lower-body work while keeping quality ahead of load.",[common.hipThrust("4 × 8"),common.splitSquat("4 × 6 per side"),common.stepDown("3 × 8 per side","medium"),common.ringRow("3 × 10"),common.pallof("3 × 12 per side")]),
+  session(46,"Stability","Single-Leg Hinge & Lateral Control","35 min","Progress unilateral range and lateral control with a level pelvis and controlled trunk.",[common.rdl("3 × 8 per side"),common.lateralStep("3 × 8 per side"),common.sidePlank("3 × 30 sec per side",false),common.carry("3 × 30 sec per side","moderate"),common.birdDog("3 × 8 per side")]),
+  session(47,"Recovery","Mobility & Trunk Reset","15 min","Keep the recovery day genuinely easy while maintaining trunk awareness.",[common.reset(),common.hipMobility(),common.bridge("2 × 10"),common.deadBug("2 × 6 per side")]),
+  session(48,"Upper Body / Rings","Overhead & Ring Accessories","40 min","Develop smooth overhead strength with ring-based upper-body accessories.",[common.cleanPress("4 × 5 per side"),common.ringPushup("3 × 10"),common.ringRow("3 × 12"),common.ringCurl("3 × 10"),common.ringTriceps("3 × 10")]),
+  session(49,"Movement / Elasticity","Landing & Pogo Control","25 min","Maintain low-volume jump preparation through quiet landings and symmetrical takeoffs.",[common.landing("3 × 6"),common.pogo("4 × 10"),common.calfRaise("3 × 15"),common.stepDown("2 × 8 per side","medium"),common.balance("2 × 25 sec per side")]),
+  session(50,"Strength B","Step-Up, Hinge & Carry","45 min","Build single-leg and posterior-chain strength with controlled carry work.",[common.stepUp("3 × 10 per side"),common.rdl("4 × 6 per side"),common.ringCloseGrip("3 × 8"),common.farmerCarry("3 × 30 sec"),common.pallof("3 × 12 per side")]),
+  session(51,"Recovery","Week 7 Recovery","15 min","Restore ease and prepare for the final week of this block.",[common.reset(),common.hipMobility(),common.birdDog("2 × 8 per side"),common.calfRaise("2 × 12")]),
+  session(52,"Strength A","Strength & Power Technique","45 min","Practice a controlled strength/power clean and press alongside progressive lower-body strength.",[common.cleanPress("4 × 5 per side"),common.hipThrust("4 × 10"),common.splitSquat("3 × 8 per side"),common.ringRow("3 × 12"),common.carry("3 × 30 sec per side","moderate")]),
+  session(53,"Stability","Lateral Strength Quality","35 min","Reinforce lateral trunk and hip stability with quality before added load.",[common.sidePlank("3 × 30 sec per side",false),common.stepDown("3 × 8 per side","medium"),common.lateralStep("3 × 10 per side"),common.pallof("3 × 12 per side"),common.birdDog("3 × 8 per side")]),
+  session(54,"Recovery","Phase 2 Recovery","15 min","Reduce effort, maintain comfortable range, and arrive fresh for the final strength sessions.",[common.reset(),common.hipMobility(),common.bridge("2 × 10"),common.deadBug("2 × 8 per side")]),
+  session(55,"Upper Body / Rings","Rings Push, Pull & Arms Build","40 min","Finish the upper-body progression with controlled rings strength, arms, and trunk position.",[common.ringPushup("3 × 10"),common.ringRow("4 × 10"),common.ringCurl("3 × 10"),common.ringTriceps("3 × 10"),common.barbellCurl("2 × 10")]),
+  session(56,"Movement / Elasticity","Elasticity Readiness","25 min","Use only crisp, low-volume contacts; quality determines whether to progress.",[common.landing("3 × 6"),common.pogo("4 × 12"),common.tibRaise("3 × 15"),common.lateralStep("2 × 10 per side"),common.sidePlank("2 × 30 sec per side",false)]),
+  session(57,"Strength B","Full-Body Strength Build","45 min","Connect lower-body strength, overhead work, rings, and carries in a controlled final build session.",[common.rdl("4 × 7 per side"),common.stepUp("3 × 10 per side"),common.cleanPress("4 × 5 per side"),common.ringCloseGrip("3 × 8"),common.farmerCarry("3 × 35 sec")]),
+  session(58,"Recovery","Strength & Build Check-In","20 min","Consolidate the block with easy movement, stability, and a quality check rather than a hard test.",[common.reset(),common.hipMobility(),common.birdDog("2 × 8 per side"),common.sidePlank("2 × 25 sec per side",false),common.balance("2 × 30 sec per side")]),
+];
+const phase2Days = phase2DayDrafts.map((workout) => ({ ...workout, id: `strength-build-phase-2-day-${workout.day}` }));
+const strengthBuild = { id: "strength-build-phase-2", title: "Phase 2 — Strength & Build", weeks: [
+  { name: "Week 5 · Strength Transition", workouts: phase2Days.slice(0, 7) }, { name: "Week 6 · Build Strength", workouts: phase2Days.slice(7, 14) }, { name: "Week 7 · Load & Control", workouts: phase2Days.slice(14, 21) }, { name: "Week 8 · Strength & Build", workouts: phase2Days.slice(21, 28) },
+] };
+const programPhases = [restoreMonth1, strengthBuild];
+const allDays = [...days, ...phase2Days];
 const legacyWorkoutDays = {
   "restore-phase-a": 1, "restore-week-1-b": 2, "restore-week-1-c": 3,
   "restore-week-2-a": 8, "restore-week-2-b": 9, "restore-week-2-c": 10,
@@ -72,7 +113,7 @@ const legacyWorkoutDays = {
   "restore-week-4-a": 22, "restore-week-4-b": 23, "restore-week-4-c": 24,
 };
 let currentExercise = 0; let activeWorkout = null;
-function getWorkouts() { return restoreMonth1.weeks.flatMap((week,index) => week.workouts.map((workout) => ({ workout, week:index+1, weekName:week.name }))); }
+function getWorkouts() { return programPhases.flatMap((phase) => phase.weeks.flatMap((week,index) => week.workouts.map((workout) => ({ workout, program:phase, week:index+1, weekName:week.name })))); }
 function getWorkoutDetails(workoutId) { return getWorkouts().find(({workout}) => workout.id === workoutId); }
 function getHistory() {
   try {
@@ -82,33 +123,34 @@ function getHistory() {
     }).sort((a,b) => new Date(b.completedAt)-new Date(a.completedAt));
   } catch { return []; }
 }
-function getProgramCompletions() { return getHistory().filter((completion) => completion.programId === restoreMonth1.id); }
+function getProgramCompletions() { return getHistory().filter((completion) => programPhases.some((phase) => completion.programId === phase.id)); }
 function getTodayWorkout() {
   const completed = new Set(getProgramCompletions().map((completion) => completion.workoutId));
-  return days.find((workout) => !completed.has(workout.id)) || days.at(-1);
+  return allDays.find((workout) => !completed.has(workout.id)) || allDays.at(-1);
 }
-function recordCompletion(workout) { const details=getWorkoutDetails(workout.id); const history=getHistory(); history.push({ programId:restoreMonth1.id, day:workout.day, workoutId:workout.id, completedAt:new Date().toISOString(), ...(details ? {week:details.week}: {}) }); localStorage.setItem(historyKey,JSON.stringify(history)); }
+function recordCompletion(workout) { const details=getWorkoutDetails(workout.id); const history=getHistory(); history.push({ programId:details?.program.id || restoreMonth1.id, day:workout.day, workoutId:workout.id, completedAt:new Date().toISOString(), ...(details ? {week:details.week}: {}) }); localStorage.setItem(historyKey,JSON.stringify(history)); }
 function formatDate(value) { return new Date(value).toLocaleDateString(); }
 function formatTime(value) { return new Date(value).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}); }
 function getTodayCompletion(workout) { return getHistory().find((completion) => completion.workoutId===workout.id && new Date(completion.completedAt).toDateString()===new Date().toDateString()); }
 function renderProgramProgress() {
   const completions = getProgramCompletions();
   const completionByWorkoutId = new Map(completions.map((completion) => [completion.workoutId, completion]));
-  return `<section class="program-progress"><h3>${restoreMonth1.title}</h3><h4>Sessions</h4>${restoreMonth1.weeks.map((week)=>`<div class="program-week"><h4>${week.name}</h4>${week.workouts.map((workout)=>{
+  return `<section class="program-progress"><h3>Training Plan</h3>${programPhases.map((phase) => `<section class="program-phase"><h4>${phase.title}</h4><p>${phase === restoreMonth1 ? "Days 1–30" : "Days 31–58"}</p>${phase.weeks.map((week)=>`<div class="program-week"><h4>${week.name}</h4>${week.workouts.map((workout)=>{
     const completion = completionByWorkoutId.get(workout.id);
     return completion
       ? `<button class="program-session is-complete" type="button" data-action="view-history" data-completed-at="${completion.completedAt}">✓ Day ${workout.day}: ${workout.title}<span>View details</span></button>`
       : `<button class="program-session" type="button" data-action="start-workout" data-workout-id="${workout.id}">○ Day ${workout.day}: ${workout.title}<span>Start workout</span></button>`;
-  }).join("")}</div>`).join("")}<p class="progress-total">${completionByWorkoutId.size} of ${days.length} sessions completed</p></section>`;
+  }).join("")}</div>`).join("")}</section>`).join("")}<p class="progress-total">${completionByWorkoutId.size} of ${allDays.length} sessions completed</p></section>`;
 }
 function renderToday() {
   const workout=getTodayWorkout();
   const completion=getTodayCompletion(workout);
-  const programComplete=getProgramCompletions().map((item)=>item.workoutId).filter((id,index,ids)=>ids.indexOf(id)===index).length===days.length;
+  const programComplete=getProgramCompletions().map((item)=>item.workoutId).filter((id,index,ids)=>ids.indexOf(id)===index).length===allDays.length;
   const action=programComplete
-    ? `<button class="primary-button" type="button" data-action="view-history" data-completed-at="${getProgramCompletions().find((item)=>item.workoutId===workout.id)?.completedAt}">View Day 30 Details</button>`
+    ? `<button class="primary-button" type="button" data-action="view-history" data-completed-at="${getProgramCompletions().find((item)=>item.workoutId===workout.id)?.completedAt}">View Day 58 Details</button>`
     : '<button class="primary-button" type="button" data-action="start">Start Workout</button>';
-  return `<section class="screen-card"><p class="day-label">Day ${workout.day} / 30</p><h2>${workout.title}</h2><p>${workout.type}</p><h3>Today's Session</h3><p>Estimated duration: ${workout.estimatedDuration}</p><p>${workout.objective}</p>${programComplete?'<p class="completion-status">✓ 30-Day Foundation complete</p>':""}${completion?`<p class="completion-status">✓ Completed Today</p><p>Completed at ${formatTime(completion.completedAt)}</p>`:""}<h3>Exercises</h3><ul>${workout.exercises.map((item)=>`<li>${item.name}</li>`).join("")}</ul>${action}${renderProgramProgress()}</section>`;
+  const details = getWorkoutDetails(workout.id);
+  return `<section class="screen-card"><p class="day-label">Day ${workout.day} / ${allDays.length}</p><h2>${workout.title}</h2><p>${details?.program.title || workout.type} · ${workout.type}</p><h3>Today's Session</h3><p>Estimated duration: ${workout.estimatedDuration}</p><p>${workout.objective}</p>${programComplete?'<p class="completion-status">✓ Strength & Build complete</p>':""}${completion?`<p class="completion-status">✓ Completed Today</p><p>Completed at ${formatTime(completion.completedAt)}</p>`:""}<h3>Exercises</h3><ul>${workout.exercises.map((item)=>`<li>${item.name}</li>`).join("")}</ul>${action}${renderProgramProgress()}</section>`;
 }
 function renderHistory() { const history=getHistory(); if(!history.length) return '<section class="screen-card"><h2>History</h2><p>No completed workouts yet.</p></section>'; return `<section class="screen-card"><h2>History</h2><div class="history-list">${history.map((completion)=>{ const details=getWorkoutDetails(completion.workoutId); if(!details) return ""; const day=completion.day||details.workout.day; return `<button class="history-item" type="button" data-action="view-history" data-completed-at="${completion.completedAt}"><strong>${details.workout.title}</strong><span>Day ${day} · ${details.workout.type}</span><span>${formatDate(completion.completedAt)} · ${formatTime(completion.completedAt)}</span></button>`; }).join("")}</div></section>`; }
 function showHistorySummary(completedAt) { const completion=getHistory().find((item)=>item.completedAt===completedAt); const details=completion&&getWorkoutDetails(completion.workoutId); if(!details) return showScreen("history"); const {workout}=details; app.innerHTML=`<section class="screen-card history-summary"><p class="day-label">Day ${completion.day||workout.day} · ${workout.type}</p><h2>${workout.title}</h2><p>${workout.objective}</p><p>${formatDate(completion.completedAt)} · ${formatTime(completion.completedAt)}</p>${workout.exercises.map((item)=>`<article class="history-exercise"><h3>${item.name}</h3><p>${item.reps||item.duration}</p><p>${item.description}</p>${item.cue?`<p><strong>Coaching Cue:</strong> ${item.cue}</p>`:""}${item.tip?`<p><strong>Tip:</strong> ${item.tip}</p>`:""}</article>`).join("")}<button class="primary-button" type="button" data-action="history">Back to History</button></section>`; }
